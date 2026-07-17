@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private security report
+    url: https://github.com/YamaTro/inertial-link-xr/security/advisories/new
+    about: Report vulnerabilities privately; never post keys or packet captures.
+  - name: Safety and support guidance
+    url: https://github.com/YamaTro/inertial-link-xr/blob/main/SUPPORT.md
+    about: Read passenger-only, privacy, and stop-use guidance before asking for help.

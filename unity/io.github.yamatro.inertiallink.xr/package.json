@@ -1,0 +1,28 @@
+{
+  "name": "io.github.yamatro.inertiallink.xr",
+  "version": "0.1.0",
+  "displayName": "InertialLink XR",
+  "description": "Authenticated vehicle-motion transport and bounded visual cue toolkit for Unity XR.",
+  "unity": "2022.3",
+  "keywords": [
+    "xr",
+    "openxr",
+    "imu",
+    "motion-cues"
+  ],
+  "author": {
+    "name": "YamaTro",
+    "url": "https://github.com/YamaTro"
+  },
+  "license": "Apache-2.0",
+  "documentationUrl": "https://github.com/YamaTro/inertial-link-xr/blob/main/unity/io.github.yamatro.inertiallink.xr/README.md",
+  "changelogUrl": "https://github.com/YamaTro/inertial-link-xr/blob/main/unity/io.github.yamatro.inertiallink.xr/CHANGELOG.md",
+  "licensesUrl": "https://github.com/YamaTro/inertial-link-xr/blob/main/unity/io.github.yamatro.inertiallink.xr/LICENSE.md",
+  "samples": [
+    {
+      "displayName": "Safe Motion Cue Demo",
+      "description": "A synthetic-source demo that moves generated content, never the XR camera.",
+      "path": "Samples~/SafeMotionCueDemo"
+    }
+  ]
+}

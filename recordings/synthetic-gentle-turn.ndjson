@@ -1,0 +1,6 @@
+{"kind":"ilxr-recording","version":1,"synthetic":true,"units":"SI","coordinates":"OpenXR RH +X right +Y up -Z forward","generator":"deterministic gentle-turn fixture v1"}
+{"kind":"sample","tNs":"0","rawAccel":[0,9.80665,0],"gyro":[0,0,0],"gravity":[0,9.80665,0],"linearAccel":[0,0,0],"rotation":[0,0,0,1],"calibrationId":1,"statusBits":1087}
+{"kind":"sample","tNs":"16666667","rawAccel":[0.2,9.80665,0],"gyro":[0,0.03,0],"gravity":[0,9.80665,0],"linearAccel":[0.2,0,0],"rotation":[0,0.002,0,0.999998],"calibrationId":1,"statusBits":1087}
+{"kind":"sample","tNs":"33333334","rawAccel":[0.4,9.80665,0],"gyro":[0,0.06,0],"gravity":[0,9.80665,0],"linearAccel":[0.4,0,0],"rotation":[0,0.006,0,0.999982],"calibrationId":1,"statusBits":1087}
+{"kind":"sample","tNs":"50000001","rawAccel":[0.2,9.80665,0],"gyro":[0,0.03,0],"gravity":[0,9.80665,0],"linearAccel":[0.2,0,0],"rotation":[0,0.008,0,0.999968],"calibrationId":1,"statusBits":1087}
+{"kind":"sample","tNs":"66666668","rawAccel":[0,9.80665,0],"gyro":[0,0,0],"gravity":[0,9.80665,0],"linearAccel":[0,0,0],"rotation":[0,0.008,0,0.999968],"calibrationId":1,"statusBits":1087}

@@ -1,0 +1,17 @@
+{
+  "name": "inertial-link-xr-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Repository checks and dependency-free protocol tools for InertialLink XR",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node --test tools/test/*.test.mjs",
+    "validate:recordings": "node tools/validate-recording.mjs recordings/*.ndjson",
+    "check:links": "node tools/check-markdown-links.mjs",
+    "check": "node --test tools/test/*.test.mjs && node tools/validate-recording.mjs recordings/*.ndjson && node tools/check-markdown-links.mjs"
+  },
+  "license": "Apache-2.0"
+}

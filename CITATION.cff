@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If InertialLink XR supports your research, cite the software release and report the exact commit, cue policy, and protocol version."
+title: "InertialLink XR"
+type: software
+version: 0.1.0
+date-released: 2026-07-17
+authors:
+  - alias: YamaTro
+repository-code: "https://github.com/YamaTro/inertial-link-xr"
+url: "https://github.com/YamaTro/inertial-link-xr"
+license: Apache-2.0
+keywords:
+  - OpenXR
+  - vehicle motion
+  - inertial measurement unit
+  - Android
+  - Unity
+abstract: >-
+  A Research Preview protocol and SDK for transporting authenticated motion
+  samples from a vehicle-fixed Android phone to an explicitly selected Unity XR
+  content root. The software makes no motion-sickness efficacy claim.

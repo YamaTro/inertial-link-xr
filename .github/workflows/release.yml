@@ -1,0 +1,152 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify and package preview tag
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24.18.0"
+      - name: Set up JDK 17
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Configure read-only Gradle cache
+        uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
+        with:
+          cache-read-only: true
+      - name: Validate tag and release metadata
+        shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]
+          VERSION="${TAG#v}"
+          export VERSION
+          node -e 'const fs=require("node:fs"); const v=process.env.VERSION; const root=require("./package.json"); const unity=require("./unity/io.github.yamatro.inertiallink.xr/package.json"); const gradle=fs.readFileSync("android/build.gradle.kts","utf8"); const app=fs.readFileSync("android/sender-app/build.gradle.kts","utf8"); if(root.version!==v||unity.version!==v||!gradle.includes(`version = "${v}"`)||!app.includes(`versionName = "${v}"`)) process.exit(1)'
+          grep -Fxq "version: $VERSION" CITATION.cff
+          grep -Fq "## [$VERSION]" CHANGELOG.md
+          grep -Fq "## [$VERSION]" unity/io.github.yamatro.inertiallink.xr/CHANGELOG.md
+          test -s .github/release-notes.md
+      - name: Run non-Unity verification
+        run: |
+          set -euo pipefail
+          npm run check
+          dotnet run --project tests/dotnet/InertialLink.Core.Tests.csproj --configuration Release
+          cd android
+          chmod +x ./gradlew
+          ./gradlew --no-daemon --dependency-verification strict check assembleRelease
+      - name: Create reviewed release handoff
+        shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          VERSION="${TAG#v}"
+          mkdir -p handoff/assets
+
+          UNITY="handoff/assets/inertial-link-xr-unity-${TAG}.tgz"
+          KOTLIN="handoff/assets/inertial-link-protocol-kotlin-${VERSION}.jar"
+          ANDROID="handoff/assets/inertial-link-motion-android-${VERSION}.aar"
+          git archive --format=tar.gz --prefix=package/ --output="$UNITY" "${TAG}:unity/io.github.yamatro.inertiallink.xr"
+          cp "android/protocol-kotlin/build/libs/protocol-kotlin-${VERSION}.jar" "$KOTLIN"
+          cp android/motion-source-android/build/outputs/aar/motion-source-android-release.aar "$ANDROID"
+          cp protocol/SPEC.md handoff/assets/ILXR-1.0-SPEC.md
+          cp LICENSE NOTICE THIRD_PARTY_NOTICES.md handoff/assets/
+          cp .github/release-notes.md handoff/release-notes.md
+
+          test -s "$UNITY"
+          test -s "$KOTLIN"
+          test -s "$ANDROID"
+          tar -tzf "$UNITY" > "$RUNNER_TEMP/inertial-link-unity-contents.txt"
+          grep -Fxq package/package.json "$RUNNER_TEMP/inertial-link-unity-contents.txt"
+          grep -Fxq package/LICENSE.md "$RUNNER_TEMP/inertial-link-unity-contents.txt"
+          grep -Fxq package/NOTICE.md "$RUNNER_TEMP/inertial-link-unity-contents.txt"
+          grep -Fxq package/THIRD_PARTY_NOTICES.md "$RUNNER_TEMP/inertial-link-unity-contents.txt"
+          jar tf "$KOTLIN" > "$RUNNER_TEMP/inertial-link-kotlin-contents.txt"
+          grep -q . "$RUNNER_TEMP/inertial-link-kotlin-contents.txt"
+          unzip -tqq "$ANDROID"
+
+          cd handoff/assets
+          find . -maxdepth 1 -type f ! -name SHA256SUMS -printf '%f\0' \
+            | LC_ALL=C sort -z \
+            | xargs -0 sha256sum > SHA256SUMS
+          test -s SHA256SUMS
+      - name: Upload verified handoff
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-handoff
+          path: handoff/
+          if-no-files-found: error
+          retention-days: 5
+          compression-level: 0
+
+  publish:
+    name: Publish Research Preview
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Download read-only verification handoff
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p handoff
+          gh run download "$RUN_ID" --name release-handoff --dir handoff
+          test -s handoff/release-notes.md
+          test -s handoff/assets/SHA256SUMS
+      - name: Confirm tag still targets verified commit
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          TYPE="$(gh api "repos/$GH_REPO/git/ref/tags/$TAG" --jq .object.type)"
+          SHA="$(gh api "repos/$GH_REPO/git/ref/tags/$TAG" --jq .object.sha)"
+          if [[ "$TYPE" == "tag" ]]; then
+            TYPE="$(gh api "repos/$GH_REPO/git/tags/$SHA" --jq .object.type)"
+            SHA="$(gh api "repos/$GH_REPO/git/tags/$SHA" --jq .object.sha)"
+          fi
+          [[ "$TYPE" == "commit" ]]
+          [[ "$SHA" == "$EXPECTED_SHA" ]]
+      - name: Create GitHub prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          gh release create "$TAG" handoff/assets/* \
+            --verify-tag \
+            --notes-file handoff/release-notes.md \
+            --prerelease \
+            --title "InertialLink XR $TAG - Research Preview"

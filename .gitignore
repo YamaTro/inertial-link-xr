@@ -1,0 +1,41 @@
+# Build outputs
+.gradle/
+.gradle-user/
+**/build/
+**/bin/
+**/obj/
+node_modules/
+coverage/
+.nyc_output/
+Library/
+Temp/
+Obj/
+Logs/
+UserSettings/
+
+# IDE and operating-system files
+.idea/
+.vscode/
+.tools/
+*.iml
+*.user
+*.suo
+*.log
+.DS_Store
+Thumbs.db
+
+# Local credentials and captures
+.env
+.env.*
+!.env.example
+*.key
+*.keystore
+*.jks
+*.p12
+*.pcap
+*.pcapng
+recordings/local/
+
+# Package artifacts
+*.tgz
+*.unitypackage

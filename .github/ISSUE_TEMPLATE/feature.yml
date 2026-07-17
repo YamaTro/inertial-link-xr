@@ -1,0 +1,43 @@
+name: Feature proposal
+description: Propose a scoped, opt-in capability.
+title: "[Feature]: "
+labels: [enhancement, needs-design]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Integrator or research problem
+      description: Describe the narrow problem without making an efficacy claim.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed interface and behavior
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Safety, security, and privacy impact
+      description: Address Camera/XR Origin isolation, authentication, dropout, permissions, storage, and immediate disable.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and alternatives
+      description: Identify protocol/API changes and simpler alternatives considered.
+    validations:
+      required: true
+  - type: checkboxes
+    id: exclusions
+    attributes:
+      label: Scope confirmation
+      options:
+        - label: This does not require driver use or a hidden/system-wide overlay.
+          required: true
+        - label: This does not add GPS, camera, microphone, telemetry, advertising, or accounts.
+          required: true
+        - label: This proposal makes no claim that the feature prevents or treats sickness.
+          required: true

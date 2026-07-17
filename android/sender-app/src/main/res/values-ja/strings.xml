@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">InertialLink XR Sender</string>
+    <string name="intro">スマートフォンのIMUデータを、ローカルネットワーク上の1台のXR受信機へ直接送信します。クラウド、位置情報、カメラ、マイク、アカウント、解析、テレメトリーは使用しません。</string>
+    <string name="safety">実験用ソフトウェアであり、医療機器ではありません。乗客のみが使用し、運転中は絶対に操作しないでください。画面を上に向け、スマートフォン上端を進行方向にして確実に固定してください。</string>
+    <string name="receiver_ip">受信機のIPアドレス</string>
+    <string name="receiver_hint">例：192.168.1.42</string>
+    <string name="receiver_port">受信機のUDPポート</string>
+    <string name="pairing_key">一時ペアリングキー</string>
+    <string name="pairing_help">送信開始前に受信機へ手動で入力してください。クリップボードへのコピーは無効です。キーはメモリ内だけに存在し、送信中は非表示になり、送信セッション終了時、再生成時、またはアプリプロセス再起動時に変わります。</string>
+    <string name="pairing_key_hidden">••••-••••-••••-••••-••••-••••-••••-••••</string>
+    <string name="regenerate_key">キーを再生成</string>
+    <string name="start">送信開始</string>
+    <string name="stop">停止</string>
+    <string name="calibrate">静止状態で校正</string>
+    <string name="status_stopped">停止中です。データは送信されていません。</string>
+    <string name="status_stopped_repair">停止しました。新しいキーを表示しています。次の送信を始める前に、受信機へ入力し直してください。</string>
+    <string name="status_starting">開始しています…</string>
+    <string name="default_port">28461</string>
+    <string name="status_sending">認証済みIMUパケットを送信中\nセッション：%1$s</string>
+    <string name="status_stats">認証済みIMUパケットを送信中\n送信：%1$d　破棄：%2$d　時刻同期応答：%3$d</string>
+    <string name="status_calibrating">校正中です。固定したスマートフォンを動かさないでください（%1$d/%2$d）</string>
+    <string name="status_calibrated">校正が完了しました（ID %1$d）。送信を継続します。</string>
+    <string name="status_calibration_failed">校正は適用されませんでした：%1$s</string>
+    <string name="status_stopped_error_repair">安全のため停止しました：%1$s\n新しいキーを表示しています。再試行する前に、受信機へ入力し直してください。</string>
+    <string name="status_key_regenerated">ペアリングキーを再生成しました。データは送信されていません。</string>
+    <string name="status_calibration_not_started">校正を開始できませんでした。</string>
+    <string name="error_invalid_port">有効なUDPポートを入力してください</string>
+    <string name="error_invalid_receiver">ローカルまたはプライベートの数値IPアドレスを入力してください</string>
+    <string name="error_start_failed">送信を開始できません</string>
+    <string name="pairing_key_description">一時ペアリングキー</string>
+    <string name="pairing_key_hidden_description">送信中のためペアリングキーは非表示です</string>
+</resources>

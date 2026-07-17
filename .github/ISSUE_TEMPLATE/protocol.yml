@@ -1,0 +1,42 @@
+name: Protocol interoperability
+description: Report a cross-implementation ILXR/1.0 difference.
+title: "[Protocol]: "
+labels: [protocol, interoperability]
+body:
+  - type: markdown
+    attributes:
+      value: Use public golden vectors or a newly generated synthetic vector. Never attach a real key or capture.
+  - type: input
+    id: implementations
+    attributes:
+      label: Implementations and versions
+      placeholder: Kotlin v0.1.0 sender → C# v0.1.0 receiver
+    validations:
+      required: true
+  - type: dropdown
+    id: message
+    attributes:
+      label: Message type
+      options: [IMU, Sync request, Sync response, Parser rejection, Replay or freshness]
+    validations:
+      required: true
+  - type: textarea
+    id: vector
+    attributes:
+      label: Synthetic vector and decoded fields
+      description: Use the published test key only and state that the vector is synthetic.
+    validations:
+      required: true
+  - type: textarea
+    id: analysis
+    attributes:
+      label: Specification section and difference
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: No production pairing key, real packet capture, location, or passenger data is included.
+          required: true

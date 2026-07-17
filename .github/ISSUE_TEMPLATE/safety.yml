@@ -1,0 +1,36 @@
+name: Safety or limitation documentation
+description: Suggest a documentation/test improvement; stop use first if an incident occurred.
+title: "[Safety docs]: "
+labels: [safety, documentation, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Stop using the software if discomfort or unsafe motion occurred. This tracker cannot provide medical advice. Security vulnerabilities belong in the private advisory form.
+  - type: textarea
+    id: gap
+    attributes:
+      label: Missing or unclear boundary
+      description: Do not include names, health history, route, location, or real-trip recordings.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Reproducible synthetic evidence or primary source
+      description: Link a primary publication/specification or describe a synthetic failure-path test.
+    validations:
+      required: true
+  - type: textarea
+    id: wording
+    attributes:
+      label: Proposed wording or test
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I removed personal, health, trip, location, and pairing-key information.
+          required: true

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <MSBuildWarningsAsErrors>MSB3245</MSBuildWarningsAsErrors>
+  </PropertyGroup>
+  <Target Name="RequireUnityEditorManagedDirectory" BeforeTargets="ResolveReferences"
+          Condition="'$(UnityEditorManagedDirectory)' == ''">
+    <Error Text="Pass /p:UnityEditorManagedDirectory=&lt;Unity Editor Data/Managed path&gt;." />
+  </Target>
+  <ItemGroup>
+    <Compile Include="../../unity/io.github.yamatro.inertiallink.xr/Runtime/**/*.cs"
+             Link="Runtime/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="../../unity/io.github.yamatro.inertiallink.xr/Samples~/**/*.cs"
+             Link="Samples/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(UnityEditorManagedDirectory)/UnityEngine/UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="UnityEngine.IMGUIModule" HintPath="$(UnityEditorManagedDirectory)/UnityEngine/UnityEngine.IMGUIModule.dll" Private="false" />
+  </ItemGroup>
+</Project>

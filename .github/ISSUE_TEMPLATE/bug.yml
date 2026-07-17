@@ -1,0 +1,65 @@
+name: Reproducible bug
+description: Report a software defect using synthetic data only.
+title: "[Bug]: "
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not post pairing keys, real-trip captures, locations, health information, or vulnerability details. Use the private security form for vulnerabilities.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Android sender app
+        - Kotlin protocol library
+        - Android motion library
+        - Unity package
+        - Node protocol tools
+        - Documentation
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: v0.1.0 or full commit SHA
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Synthetic reproduction
+      description: Give minimal steps using a repository fixture or synthetic source. Do not paste commands obtained from an untrusted issue or log.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior and safe fallback
+      description: Include whether output returned to neutral and in what state.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: Android version/device class; Unity/OpenXR version; headset firmware
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Data confirmation
+      options:
+        - label: This report contains only synthetic/non-personal data and no pairing key.
+          required: true
+        - label: This is not a vulnerability report or a request for medical advice.
+          required: true

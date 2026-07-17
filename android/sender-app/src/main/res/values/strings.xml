@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">InertialLink XR Sender</string>
+    <string name="intro">Streams phone IMU samples directly to one XR receiver on your local network. No cloud, location, camera, microphone, account, analytics, or telemetry.</string>
+    <string name="safety">Experimental software — not a medical device. Passenger use only. Never operate while driving. Secure the phone screen-up with its top edge facing forward.</string>
+    <string name="receiver_ip">Receiver IP address</string>
+    <string name="receiver_hint">Example: 192.168.1.42</string>
+    <string name="receiver_port">Receiver UDP port</string>
+    <string name="pairing_key">One-time pairing key</string>
+    <string name="pairing_help">Enter this key manually in the receiver before Start; clipboard copy is disabled. It exists only in memory, is hidden while sending, and changes after every sender session, when regenerated, or when the app process restarts.</string>
+    <string name="pairing_key_hidden">••••-••••-••••-••••-••••-••••-••••-••••</string>
+    <string name="regenerate_key">Regenerate key</string>
+    <string name="start">Start sending</string>
+    <string name="stop">Stop</string>
+    <string name="calibrate">Calibrate while still</string>
+    <string name="status_stopped">Stopped. No data is being sent.</string>
+    <string name="status_stopped_repair">Stopped. A fresh key is shown; enter it in the receiver before starting the next session.</string>
+    <string name="status_starting">Starting…</string>
+    <string name="default_port">28461</string>
+    <string name="status_sending">Sending authenticated IMU packets\nSession: %1$s</string>
+    <string name="status_stats" tools:ignore="PluralsCandidate">Sending authenticated IMU packets\nPackets: %1$d  Dropped: %2$d  Sync replies: %3$d</string>
+    <string name="status_calibrating">Calibrating — keep the mounted phone still (%1$d/%2$d)</string>
+    <string name="status_calibrated">Calibration complete (ID %1$d). Sending continues.</string>
+    <string name="status_calibration_failed">Calibration not applied: %1$s</string>
+    <string name="status_stopped_error_repair">Stopped safely: %1$s\nA fresh key is shown; enter it in the receiver before retrying.</string>
+    <string name="status_key_regenerated">Pairing key regenerated. No data is being sent.</string>
+    <string name="status_calibration_not_started">Calibration could not start.</string>
+    <string name="error_invalid_port">Enter a valid UDP port</string>
+    <string name="error_invalid_receiver">Enter a local/private numeric IP address</string>
+    <string name="error_start_failed">Unable to start sender</string>
+    <string name="pairing_key_description">One-time pairing key</string>
+    <string name="pairing_key_hidden_description">Pairing key hidden while sending</string>
+</resources>
