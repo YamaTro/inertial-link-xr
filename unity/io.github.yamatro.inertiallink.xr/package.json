@@ -1,6 +1,6 @@
 {
   "name": "io.github.yamatro.inertiallink.xr",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "displayName": "InertialLink XR",
   "description": "Authenticated vehicle-motion transport and bounded visual cue toolkit for Unity XR.",
   "unity": "2022.3",
@@ -23,6 +23,11 @@
       "displayName": "Safe Motion Cue Demo",
       "description": "A synthetic-source demo that moves generated content, never the XR camera.",
       "path": "Samples~/SafeMotionCueDemo"
+    },
+    {
+      "displayName": "Vertical Video + Directional Star Grid",
+      "description": "A fixed 9:16 video backed by a curved vehicle-synchronized perspective grid.",
+      "path": "Samples~/VerticalVideoCueDemo"
     }
   ]
 }

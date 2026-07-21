@@ -20,7 +20,7 @@ For a Git dependency after the repository is public and tagged, pin an exact
 release tag and package subdirectory rather than `main`:
 
 ```text
-https://github.com/YamaTro/inertial-link-xr.git?path=/unity/io.github.yamatro.inertiallink.xr#v0.1.0
+https://github.com/YamaTro/inertial-link-xr.git?path=/unity/io.github.yamatro.inertiallink.xr#v0.2.0
 ```
 
 Do not use an unreviewed moving branch in a released XR application.

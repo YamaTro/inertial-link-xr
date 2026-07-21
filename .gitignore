@@ -12,6 +12,11 @@ Temp/
 Obj/
 Logs/
 UserSettings/
+.presentation-work/
+outputs/
+unity/ValidationProject/Packages/packages-lock.json
+unity/ValidationProject/ProjectSettings/*
+!unity/ValidationProject/ProjectSettings/ProjectVersion.txt
 
 # IDE and operating-system files
 .idea/

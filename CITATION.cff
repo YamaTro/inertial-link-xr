@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If InertialLink XR supports your research, cite the software release and report the exact commit, cue policy, and protocol version."
 title: "InertialLink XR"
 type: software
-version: 0.1.0
-date-released: 2026-07-17
+version: 0.2.0
+date-released: 2026-07-22
 authors:
   - alias: YamaTro
 repository-code: "https://github.com/YamaTro/inertial-link-xr"

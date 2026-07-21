@@ -1,6 +1,9 @@
 {
   "dependencies": {
     "com.unity.test-framework": "1.5.1",
+    "com.unity.modules.imageconversion": "1.0.0",
+    "com.unity.modules.physics": "1.0.0",
+    "com.unity.modules.video": "1.0.0",
     "io.github.yamatro.inertiallink.xr": "file:../../io.github.yamatro.inertiallink.xr"
   },
   "testables": [

@@ -41,7 +41,7 @@ Review the merged app manifest before every release:
 Treat any newly merged sensitive permission as a release blocker until publicly
 reviewed and documented.
 
-The v0.1 reference sender targets SDK 35, so `INTERNET` is the correct and only
+The v0.2 reference sender targets SDK 35, so `INTERNET` is the correct and only
 network permission. An integrating Android host that later targets Android 17
 (SDK 37+) must follow Android's
 [local network permission guidance](https://developer.android.com/privacy-and-security/local-network-permission):

@@ -1,5 +1,7 @@
 # InertialLink XR
 
+![InertialLink XR: Android IMU to authenticated local XR motion link](docs/assets/devpost-thumbnail.png)
+
 **Research Preview — not a medical device and not proven to prevent motion sickness.**
 
 InertialLink XR is an open protocol, Android motion sender, and Unity/OpenXR
@@ -7,6 +9,13 @@ package for driving an explicitly selected virtual environment root from a
 vehicle-mounted phone. It keeps the headset's normal head tracking separate
 from vehicle motion and gives researchers and XR developers a small,
 auditable integration surface.
+
+![Unity Play Mode receiving authenticated Xiaomi 13T motion while a fixed
+vertical video remains clear](docs/assets/xiaomi13t-unity-demo.png)
+
+*Stationary Xiaomi XIG04 to Unity 6000.1.14f1 validation: 216 authenticated
+packets accepted, 0 rejected, 2,019 directional cues, and Camera pose
+unchanged. This verifies the integration path, not human comfort or efficacy.*
 
 [日本語](README.ja.md) · [Protocol](protocol/SPEC.md) ·
 [Integration guide](docs/integration.md) · [Safety](docs/safety.md) ·
@@ -32,11 +41,26 @@ auditable integration surface.
   inspection, protocol tests, and recording validation.
 - Synthetic recordings and documentation for repeatable development without
   collecting real passenger or location data.
+- A directional star-grid sample that keeps a 9:16 video fixed while a curved,
+  perspective-converging background conveys vehicle motion, plus a diagnostic monitor for
+  measured-versus-virtual acceleration mismatch and bounded correction suggestions.
 
 It does **not** provide a Quest-wide/system overlay, replace OpenXR head
 tracking, infer location, reconstruct a vehicle trajectory, or make arbitrary
 third-party applications move. Applications opt in and choose exactly which
 content consumes motion data.
+
+## Research basis
+
+Peer-reviewed on-road/on-vehicle studies have reported lower sickness with
+vehicle-synchronized peripheral or background visual cues. Recent work also
+reports that sparse acceleration-based cues can reduce distraction during tasks
+such as watching a movie. InertialLink XR turns that research direction into a
+reusable Unity/OpenXR integration layer; it does **not** claim that this
+implementation has independently reproduced the human-subject results.
+
+See [Research basis and claim boundary](docs/research-basis.md) for the cited
+2022 HFES, 2024 IEEE Access, 2017 CHI, and 2026 Applied Ergonomics studies.
 
 ## Architecture
 
@@ -125,9 +149,35 @@ motion-data confidentiality matters.
 assigned content transform. It must not be placed above a Camera, XR Origin,
 or unrelated application UI. See [limitations](docs/limitations.md).
 
+## Built with Codex and GPT-5.6
+
+InertialLink XR was created during OpenAI Build Week in a Codex session using
+GPT-5.6. The builder set the product constraints and safety boundaries; Codex
+helped turn them into a cross-language implementation, tests, documentation,
+and release automation.
+
+Codex accelerated the work by:
+
+- decomposing the idea into a versioned wire protocol, Android sender, Unity
+  package, and dependency-free synthetic tools;
+- implementing shared authenticated packet vectors across Kotlin, C#, and
+  Node.js, then adding failure-path tests for tampering, replay, stale data,
+  invalid numbers, and safe fade-out;
+- reviewing the permission and data-flow surface so the Android app could ship
+  without camera, microphone, location, account, advertising, or telemetry
+  permissions; and
+- producing reproducible validation notes and release artifacts while clearly
+  separating verified checks from unavailable hardware and human testing.
+
+The key product decisions remained explicit human choices: use a
+vehicle-mounted phone as an external vehicle-motion reference; preserve normal
+head tracking; modify only an opt-in content root; fail closed on invalid or
+missing data; and make no motion-sickness efficacy claim. See the detailed
+[Build Week collaboration record](docs/OPENAI_BUILD_WEEK.md).
+
 ## Project status
 
-The v0.1 goal is interoperability and safe failure behavior, not an efficacy
+The v0.2 goal is interoperability and safe failure behavior, not an efficacy
 claim. APIs and wire-protocol minor versions may evolve. Compatibility rules
 are documented in the [specification](protocol/SPEC.md), and planned work is
 tracked in the [roadmap](ROADMAP.md).

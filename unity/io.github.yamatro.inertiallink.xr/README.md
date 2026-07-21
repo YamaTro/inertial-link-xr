@@ -8,7 +8,7 @@ existing Unity/OpenXR applications and includes optional bounded visual drivers.
 In Package Manager, add the package from this repository's Git URL with the package path:
 
 ```text
-https://github.com/YamaTro/inertial-link-xr.git?path=/unity/io.github.yamatro.inertiallink.xr#v0.1.0
+https://github.com/YamaTro/inertial-link-xr.git?path=/unity/io.github.yamatro.inertiallink.xr#v0.2.0
 ```
 
 Pin a release tag as above for reproducible installs. Depending on the moving `main` branch is not recommended.
@@ -44,6 +44,16 @@ Read `hub.Current`, subscribe to `hub.MotionUpdated`, add `PeripheralCueField`, 
 ```csharp
 driver.Configure(hub, visualContentRoot);
 ```
+
+`PeripheralCueMargins` generates cues only in left/right margin bands around protected central content. The
+`DirectionalMotionDome` alternative generates a curved, perspective-converging star grid behind protected
+content. Lateral/vertical/forward acceleration and yaw change only the bounded grid flow; dots never move in
+front of the sample's 9:16 panel. The **Vertical Video + Directional Star Grid** sample keeps the video, Camera,
+and XR Origin fixed while this background reacts to a synthetic or authenticated vehicle source.
+
+`MotionAlignmentMonitor` compares a same-coordinate-system virtual acceleration supplied by the application
+with `hub.Current.LinearAcceleration`. It reports a mismatch and bounded correction suggestion but never applies
+that correction automatically.
 
 `visualContentRoot` must be a separate content hierarchy. The driver refuses roots that contain a Camera/XR Origin
 or sit underneath one. Never pass the XR Origin, Camera Offset, or XR camera.

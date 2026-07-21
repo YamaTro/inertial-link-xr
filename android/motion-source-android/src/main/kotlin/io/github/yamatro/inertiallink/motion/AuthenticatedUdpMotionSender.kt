@@ -37,10 +37,13 @@ public data class UdpSenderConfig(
     public val endpoint: UdpEndpoint,
     public val maximumFrameAgeNs: Long = 150_000_000L,
     public val statisticsIntervalNs: Long = 1_000_000_000L,
+    /** Zero selects an ephemeral source port. A fixed port is useful for explicit local relays. */
+    public val localPort: Int = 0,
 ) {
     init {
         require(maximumFrameAgeNs in 20_000_000L..2_000_000_000L) { "maximumFrameAgeNs is outside bounds" }
         require(statisticsIntervalNs in 250_000_000L..10_000_000_000L) { "statisticsIntervalNs is outside bounds" }
+        require(localPort == 0 || localPort in 1_024..65_535) { "localPort must be zero or between 1024 and 65535" }
     }
 }
 
@@ -85,19 +88,9 @@ public class AuthenticatedUdpMotionSender(
         check(!closed.get()) { "Sender has been closed" }
         singleStart.claim()
         check(running.compareAndSet(false, true)) { "Sender is already running" }
-        var candidateSocket: DatagramSocket? = null
         val newSocket = try {
-            DatagramSocket().also { candidate ->
-                candidateSocket = candidate
-                candidate.apply {
-                    broadcast = false
-                    reuseAddress = false
-                    soTimeout = RECEIVE_TIMEOUT_MS
-                    connect(config.endpoint.address, config.endpoint.port)
-                }
-            }
+            openConnectedSocketOffCallerThread()
         } catch (error: Exception) {
-            candidateSocket?.close()
             running.set(false)
             throw IOException("Unable to open UDP sender", error)
         }
@@ -114,6 +107,64 @@ public class AuthenticatedUdpMotionSender(
             failAndStop("Unable to start motion sensors", error)
             throw error
         }
+    }
+
+    /**
+     * Android rejects socket work on the main thread. Keep start() synchronous for
+     * API compatibility while performing the bounded socket setup on a worker.
+     */
+    private fun openConnectedSocketOffCallerThread(): DatagramSocket {
+        val gate = Object()
+        var completed = false
+        var abandoned = false
+        var openedSocket: DatagramSocket? = null
+        var failure: Exception? = null
+        val opener = Thread({
+            var candidate: DatagramSocket? = null
+            try {
+                candidate = DatagramSocket(config.localPort).apply {
+                    broadcast = false
+                    reuseAddress = false
+                    soTimeout = RECEIVE_TIMEOUT_MS
+                    connect(config.endpoint.address, config.endpoint.port)
+                }
+            } catch (error: Exception) {
+                candidate?.close()
+                failure = error
+            }
+            synchronized(gate) {
+                if (abandoned) {
+                    candidate?.close()
+                } else {
+                    openedSocket = candidate
+                    completed = true
+                    gate.notifyAll()
+                }
+            }
+        }, "InertialLink-UDP-Open").apply { isDaemon = true }
+        opener.start()
+
+        val deadline = System.nanoTime() + SOCKET_OPEN_TIMEOUT_MS * 1_000_000L
+        synchronized(gate) {
+            while (!completed) {
+                val remainingNs = deadline - System.nanoTime()
+                if (remainingNs <= 0L) {
+                    abandoned = true
+                    opener.interrupt()
+                    throw SocketTimeoutException("UDP sender setup timed out")
+                }
+                try {
+                    gate.wait((remainingNs / 1_000_000L).coerceAtLeast(1L))
+                } catch (error: InterruptedException) {
+                    abandoned = true
+                    opener.interrupt()
+                    Thread.currentThread().interrupt()
+                    throw IOException("UDP sender setup was interrupted", error)
+                }
+            }
+        }
+        failure?.let { throw it }
+        return checkNotNull(openedSocket) { "UDP sender setup completed without a socket" }
     }
 
     override fun onMotionFrame(frame: MotionFrame) {
@@ -294,6 +345,7 @@ public class AuthenticatedUdpMotionSender(
 
     private companion object {
         const val RECEIVE_TIMEOUT_MS: Int = 250
+        const val SOCKET_OPEN_TIMEOUT_MS: Long = 2_000
         const val STOP_JOIN_TIMEOUT_MS: Long = 1_000
         const val MAX_RECENT_NONCES: Int = 64
         fun generateSessionId(): Long {
