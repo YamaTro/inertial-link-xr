@@ -107,12 +107,29 @@ adoption easier. Evidence is strongest when every statement identifies whether
 it comes from prior literature, automated tests, a local runtime demonstration,
 or a still-unperformed human trial.
 
+### Why it matters beyond motion-sickness research
+
+The durable contribution is not a single comfort effect; it is a working,
+authenticated external-motion reference that an XR application can consume
+without surrendering head tracking. The same separation can support
+physical-versus-virtual acceleration diagnostics, digital-twin alignment,
+motion-platform and simulator calibration, moving-cabin training systems, and
+repeatable QA for content that must react to a real platform. InertialLink XR
+already exposes the bounded mismatch signal needed for those workflows while
+leaving every correction reviewable and application-controlled.
+
+That makes the project useful even if a future passenger study finds that one
+cue design helps only some users: the protocol, security boundary, calibration
+path, reference-frame separation, and diagnostic layer remain reusable OSS
+infrastructure.
+
 ### What's next
 
 Next are OpenXR headset validation, user-adjustable cue strength and polarity,
-longer stationary reliability tests, and controlled vehicle trials. Only after
-those steps should carefully governed passenger research begin, with informed
-consent, stop criteria, individual tuning, and appropriate review.
+longer stationary reliability tests, digital-twin and simulator adapters, and
+controlled vehicle trials. Only after those steps should carefully governed
+passenger research begin, with informed consent, stop criteria, individual
+tuning, and appropriate review.
 
 ## Built with
 
