@@ -5,6 +5,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.TestTools;
 using YamaTro.InertialLink.Core;
+using UnityObject = UnityEngine.Object;
 
 namespace YamaTro.InertialLink.Tests
 {
@@ -42,7 +43,7 @@ namespace YamaTro.InertialLink.Tests
         {
             var root = new GameObject("VisualContent");
             try { Assert.That(EnvironmentMotionDriver.IsSafeTarget(root.transform), Is.True); }
-            finally { Object.DestroyImmediate(root); }
+            finally { UnityObject.DestroyImmediate(root); }
         }
 
         [Test]
@@ -53,7 +54,7 @@ namespace YamaTro.InertialLink.Tests
             camera.transform.SetParent(root.transform);
             camera.AddComponent<Camera>();
             try { Assert.That(EnvironmentMotionDriver.IsSafeTarget(root.transform), Is.False); }
-            finally { Object.DestroyImmediate(root); }
+            finally { UnityObject.DestroyImmediate(root); }
         }
 
         [Test]
@@ -64,7 +65,7 @@ namespace YamaTro.InertialLink.Tests
             var root = new GameObject("HeadLockedContent");
             root.transform.SetParent(camera.transform);
             try { Assert.That(EnvironmentMotionDriver.IsSafeTarget(root.transform), Is.False); }
-            finally { Object.DestroyImmediate(camera); }
+            finally { UnityObject.DestroyImmediate(camera); }
         }
 
         [Test]
@@ -79,7 +80,7 @@ namespace YamaTro.InertialLink.Tests
                 Assert.That(EnvironmentMotionDriver.IsSafeTarget(content.transform), Is.False, "ancestor XR Origin");
                 Assert.That(EnvironmentMotionDriver.IsSafeTarget(xrOrigin.transform), Is.False, "target XR Origin");
             }
-            finally { Object.DestroyImmediate(xrOrigin); }
+            finally { UnityObject.DestroyImmediate(xrOrigin); }
         }
 
         [Test]
@@ -106,8 +107,8 @@ namespace YamaTro.InertialLink.Tests
             }
             finally
             {
-                Object.DestroyImmediate(controller);
-                Object.DestroyImmediate(visualRoot);
+                UnityObject.DestroyImmediate(controller);
+                UnityObject.DestroyImmediate(visualRoot);
             }
         }
 
@@ -139,7 +140,7 @@ namespace YamaTro.InertialLink.Tests
                     .GetValue(receiver), Is.EqualTo(0UL));
                 Assert.That(receiver.IsReady, Is.False);
             }
-            finally { Object.DestroyImmediate(receiverObject); }
+            finally { UnityObject.DestroyImmediate(receiverObject); }
         }
 
         [Test]
@@ -162,7 +163,7 @@ namespace YamaTro.InertialLink.Tests
                 Assert.That(key.GetValue(receiver), Is.Null);
                 Assert.That(receiver.IsReady, Is.False);
             }
-            finally { Object.DestroyImmediate(receiverObject); }
+            finally { UnityObject.DestroyImmediate(receiverObject); }
         }
 
         [Test]
@@ -183,7 +184,7 @@ namespace YamaTro.InertialLink.Tests
                 Assert.That(hub.Current.SafetyState, Is.EqualTo(MotionSafetyState.Waiting));
                 Assert.That(updates, Is.EqualTo(1));
             }
-            finally { Object.DestroyImmediate(controller); }
+            finally { UnityObject.DestroyImmediate(controller); }
         }
 
         [Test]
@@ -203,9 +204,9 @@ namespace YamaTro.InertialLink.Tests
             }
             finally
             {
-                Object.DestroyImmediate(controller);
-                Object.DestroyImmediate(first);
-                Object.DestroyImmediate(second);
+                UnityObject.DestroyImmediate(controller);
+                UnityObject.DestroyImmediate(first);
+                UnityObject.DestroyImmediate(second);
             }
         }
 
@@ -228,8 +229,8 @@ namespace YamaTro.InertialLink.Tests
             }
             finally
             {
-                Object.DestroyImmediate(controller);
-                Object.DestroyImmediate(visualRoot);
+                UnityObject.DestroyImmediate(controller);
+                UnityObject.DestroyImmediate(visualRoot);
             }
         }
 
@@ -278,7 +279,7 @@ namespace YamaTro.InertialLink.Tests
                     "invalid custom data cannot refresh liveness");
                 Assert.That(hub.Current.RawAcceleration, Is.EqualTo(Vector3.zero));
             }
-            finally { Object.DestroyImmediate(controller); }
+            finally { UnityObject.DestroyImmediate(controller); }
         }
 
         [Test]
@@ -310,7 +311,7 @@ namespace YamaTro.InertialLink.Tests
                 hub.MotionUpdated -= throwing;
                 hub.MotionUpdated -= later;
             }
-            finally { Object.DestroyImmediate(controller); }
+            finally { UnityObject.DestroyImmediate(controller); }
         }
 
         [Test]
@@ -320,6 +321,104 @@ namespace YamaTro.InertialLink.Tests
             Assert.That(CoordinateMapping.AngularVelocityToUnity(new Float3(1, 2, 3)), Is.EqualTo(new Vector3(-1, -2, 3)));
             var rotation = CoordinateMapping.RotationToUnity(new Float4(0.1f, 0.2f, 0.3f, 0.9f));
             Assert.That(rotation, Is.EqualTo(new Quaternion(-0.1f, -0.2f, 0.3f, 0.9f)));
+        }
+
+        [Test]
+        public void AlignmentMonitorReportsBoundedCorrectionWithoutApplyingIt()
+        {
+            var snapshot = MotionAlignmentMonitor.Evaluate(new Vector3(2f, 0f, 0f),
+                new Vector3(0.5f, 0f, 0f), true, 0.35f, 0.5f, 0.6f);
+            Assert.That(snapshot.Available, Is.True);
+            Assert.That(snapshot.Mismatch, Is.EqualTo(new Vector3(1.5f, 0f, 0f)));
+            Assert.That(snapshot.MismatchMagnitude, Is.EqualTo(1.5f).Within(0.0001f));
+            Assert.That(snapshot.SuggestedVirtualCorrection, Is.EqualTo(new Vector3(0.6f, 0f, 0f)));
+            Assert.That(snapshot.WithinTolerance, Is.False);
+        }
+
+        [Test]
+        public void AlignmentMonitorRejectsInvalidVirtualAccelerationAndFailsNeutral()
+        {
+            var controller = new GameObject("Alignment monitor");
+            try
+            {
+                var monitor = controller.AddComponent<MotionAlignmentMonitor>();
+                Assert.That(monitor.SetVirtualLinearAcceleration(new Vector3(float.NaN, 0f, 0f)), Is.False);
+                Assert.That(monitor.Current.Available, Is.False);
+                Assert.That(monitor.Current.SuggestedVirtualCorrection, Is.EqualTo(Vector3.zero));
+                var unavailable = MotionAlignmentMonitor.Evaluate(Vector3.one, Vector3.zero, false, 1f, 1f, 1f);
+                Assert.That(unavailable.Available, Is.False);
+                Assert.That(unavailable.Mismatch, Is.EqualTo(Vector3.zero));
+            }
+            finally { UnityObject.DestroyImmediate(controller); }
+        }
+
+        [Test]
+        public void MarginCueLayoutProtectsCentralVerticalContent()
+        {
+            var centers = PeripheralCueMargins.BuildCueCenters(4, 9, 0.72f, 1.45f, 1.05f, 2.8f);
+            Assert.That(centers.Length, Is.EqualTo(72));
+            foreach (var center in centers)
+            {
+                Assert.That(Mathf.Abs(center.x), Is.GreaterThan(0.72f));
+                Assert.That(Mathf.Abs(center.x), Is.LessThan(1.45f));
+                Assert.That(Mathf.Abs(center.y), Is.LessThan(1.05f));
+                Assert.That(center.z, Is.EqualTo(2.8f));
+            }
+        }
+
+        [Test]
+        public void DirectionalDomeBuildsADeepCurvedGridBehindContent()
+        {
+            var centers = DirectionalMotionDome.BuildGroundCenters(48, 42, 3.2f, 38f, 20f, -1.15f, 0.0025f);
+            Assert.That(centers.Length, Is.EqualTo(48 * 42 + 3));
+            for (var index = 0; index < 48 * 42; index++)
+            {
+                Assert.That(centers[index].z, Is.GreaterThanOrEqualTo(3.2f));
+                Assert.That(centers[index].z, Is.LessThanOrEqualTo(38f));
+                Assert.That(float.IsNaN(centers[index].x), Is.False);
+                Assert.That(float.IsNaN(centers[index].y), Is.False);
+            }
+            Assert.That(centers[0].y, Is.LessThan(centers[24].y),
+                "curved edges must sit lower than the center horizon");
+        }
+
+        [Test]
+        public void DirectionalDomeRejectsInvalidInputAndBoundsFlow()
+        {
+            var invalid = DirectionalMotionDome.EvaluateTargetFlow(
+                new Vector3(float.NaN, 0f, 0f), Vector3.one, 3f, 6f, 8f, -1f);
+            Assert.That(invalid, Is.EqualTo(Vector3.zero));
+
+            var bounded = DirectionalMotionDome.EvaluateTargetFlow(
+                new Vector3(1000f, 1000f, 1000f), new Vector3(0f, 1000f, 0f), 3f, 6f, 2f, -1f);
+            Assert.That(bounded.magnitude, Is.EqualTo(2f).Within(0.0001f));
+        }
+
+        [Test]
+        public void MarginCuesFailClosedIfCameraIsAddedToTheirHierarchy()
+        {
+            var controller = new GameObject("Controller");
+            var cueObject = new GameObject("Margin cues");
+            try
+            {
+                var hub = controller.AddComponent<VehicleMotionHub>();
+                var cues = cueObject.AddComponent<PeripheralCueMargins>();
+                cues.Configure(hub, null);
+                var lateCamera = new GameObject("Late Camera");
+                lateCamera.transform.SetParent(cueObject.transform);
+                lateCamera.AddComponent<Camera>();
+                LogAssert.Expect(LogType.Error,
+                    "InertialLink stopped PeripheralCueMargins because its hierarchy became unsafe.");
+                typeof(PeripheralCueMargins).GetMethod("LateUpdate", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(cues, null);
+                Assert.That(cues.enabled, Is.False);
+                Assert.That(cueObject.GetComponent<MeshRenderer>().enabled, Is.False);
+            }
+            finally
+            {
+                UnityObject.DestroyImmediate(controller);
+                UnityObject.DestroyImmediate(cueObject);
+            }
         }
     }
 }

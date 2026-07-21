@@ -38,6 +38,10 @@ tasks.processResources {
     dependsOn(generateLegalResources)
 }
 
+tasks.named("sourcesJar") {
+    dependsOn(generateLegalResources)
+}
+
 publishing {
     publications {
         create<MavenPublication>("protocol") {

@@ -1,6 +1,6 @@
-# Validation record for v0.1.0
+# Validation record for v0.2.0
 
-Date: 2026-07-17
+Date: 2026-07-22
 Status: Research Preview
 
 This file separates checks that actually ran from checks that remain unavailable.
@@ -10,11 +10,14 @@ It is not a safety, medical, clinical, or compatibility certification.
 
 | Area | Command / evidence | Result |
 | --- | --- | --- |
-| Node protocol and security boundaries | `npm run check` on Node 24.13.1 | 20/20 deterministic unit/mutation tests pass; 1 recording with 5 synthetic samples validates; 88 local Markdown links across 38 files resolve. |
+| Node protocol and security boundaries | `npm run check` on Node 24.13.1 | 21/21 deterministic unit/mutation tests pass, including the pinned-endpoint UDP relay boundary; 1 recording with 5 synthetic samples validates; 102 local Markdown links across 42 files resolve. |
 | Node loopback transport | Inspector and connected synthetic sender with the documented public test key | The inspector authenticated and accepted 7 sequential synthetic IMU datagrams on `127.0.0.1`; no non-loopback interface or real sensor was used. |
 | C# protocol core | `dotnet run --project tests/dotnet/InertialLink.Core.Tests.csproj --configuration Release` | 24/24 dependency-free protocol, replay, timing, filtering, and safety-gate executable checks pass. |
-| Android source | From `android/`: Gradle 8.11.1 with `--offline --no-daemon --dependency-verification strict check assembleDebug assembleRelease` | `BUILD SUCCESSFUL`; 189 tasks, 15 protocol tests and 21 motion tests for each debug/release variant, failures/errors/skips 0, lint errors 0. The only lint warning is the documented SDK 35 `OldTargetApi`; `aapt2` reports only `INTERNET`. |
+| Android source | From `android/`: Gradle 8.11.1 with `--offline --no-daemon --dependency-verification strict check assembleDebug assembleRelease` | `BUILD SUCCESSFUL`; protocol and motion tests pass and release lint reports no errors. `aapt2` reports `INTERNET` only for release; the local debug APK additionally requests `WAKE_LOCK` for the five-minute-capped locked-device validation path. |
 | Unity-facing source compilation | `dotnet build tests/dotnet/InertialLink.Unity.Compile.csproj --configuration Release --property:UnityEditorManagedDirectory=...` against installed Unity 6000.1.14f1 assemblies | Build succeeds with 0 warnings and 0 errors. This is a static compatibility check, not an Editor or headset run. |
+| Unity package Edit Mode tests | Unity 6000.1.14f1 Test Runner on 2026-07-21 | 19/19 tests pass, failures/skips 0. Coverage includes Camera/XR Origin hierarchy refusal, invalid source/number handling, neutral failover, acceleration-alignment bounds, protected-center and curved-grid geometry, bounded flow, and late hierarchy mutation. |
+| Unity vertical-video Play Mode demo | Normal Unity 6000.1.14f1 Editor Play Mode using the local validation harness and generated 9:16 H.264 asset | Video prepared and played at 720x1280; frame 30 was captured; 72 cue particles remained outside the protected central half-width; Camera pose stayed unchanged. At capture, synthetic measured X acceleration was 1.134 m/s², the deliberately under-responsive virtual value was 0.816 m/s², mismatch was 0.318 m/s², and the bounded suggested correction was 0.159 m/s². |
+| Xiaomi 13T to Unity integration | Xiaomi XIG04, Android 15/API 35, Unity 6000.1.14f1 on 2026-07-22 | 216 authenticated packets accepted, 0 rejected/dropped, clock synchronized at 5.448 ms best RTT, safety weight 1.0, local 9:16 video playing at frame 112, 2,019 directional cues active, and Camera pose unchanged. No pairing key was written to evidence. A pinned, bounded local relay handled the existing Windows Public-profile Unity block without changing firewall configuration. |
 | Shared wire vectors | Kotlin, C#, and Node test suites consume `protocol/TEST_VECTORS.md` | Authenticated IMU/sync bytes and failure-path rules are cross-checked in all three implementations. |
 | Release automation supply chain | Official Git tag refs were queried read-only on 2026-07-17 | Every third-party action is pinned to the full official tag SHA listed below. |
 
@@ -25,15 +28,10 @@ uploads one handoff artifact. Only the dependent `publish` job receives
 `contents: write`; it checks that the tag still targets the verified commit and
 creates a prerelease from the handoff.
 
-## Not verified in v0.1.0
+## Not verified in v0.2.0
 
-- Unity Edit Mode and Play Mode tests were attempted with Unity 6000.1.14f1 on
-  2026-07-16, but the Editor exited before running tests because no valid
-  `com.unity.editor.headless` entitlement/license was available. No Unity test
-  pass is claimed.
-- No physical Android phone, Meta Quest/other OpenXR headset, USB/Wi-Fi transport,
-  Android emulator, bus/car cabin, or long-duration thermal/background run was
-  available for release qualification.
+- No Meta Quest/other OpenXR headset, bus/car cabin, human motion trial, or
+  long-duration thermal/background run was available for release qualification.
 - No human-subject, usability, accessibility, motion-sickness efficacy, medical,
   or clinical trial has been performed. The cue cannot be described as preventing
   or reducing sickness for an individual or population.
@@ -43,6 +41,23 @@ creates a prerelease from the handoff.
   staleness, numeric bounds, and safe fade-out; these do not prove absence of bugs.
 - The project is an opt-in Unity application integration. It is not a Quest or
   OpenXR system overlay and has not been tested inside arbitrary third-party apps.
+- Unity's Windows VideoPlayer did not prepare the MP4 in Editor batch mode. The
+  same local asset prepared and played in normal Editor Play Mode, so automated
+  video validation currently requires a graphical Editor session.
+
+## Research-evidence boundary
+
+The Play Mode demo validates implementation mechanics, not human efficacy. Prior
+peer-reviewed vehicle studies report reduced sickness from synchronized
+background/peripheral visual motion, including on-road video viewing, but no
+participant in this project has been exposed to the cue. See
+[Research basis and claim boundary](research-basis.md).
+
+The reviewed real-device screenshot is stored at
+[`assets/xiaomi13t-unity-demo.png`](assets/xiaomi13t-unity-demo.png). It contains
+only the Unity presentation surface and summary diagnostics; the ignored local
+JSON evidence, raw validation logs, pairing key, and device-control artifacts are
+not published.
 
 ## Release artifact boundary
 
@@ -51,6 +66,10 @@ tarball, Kotlin protocol JAR, Android motion-source AAR, ILXR/1.0 specification,
 license/notices, and `SHA256SUMS`. It intentionally excludes the unsigned
 release APK, debug-signed APK, keystore/signing key, pairing key, packet capture,
 real-trip recording, and human-subject data.
+
+The generated vertical-video frame, MP4, screenshot, logs, and JSON evidence are
+local presentation/validation outputs. They are not part of the source release or
+the Android/Unity package artifacts.
 
 ## Pinned GitHub Actions provenance
 

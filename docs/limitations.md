@@ -39,7 +39,7 @@
   timing can add latency not visible in a sender-only metric.
 - Android host apps targeting SDK 37+ can lose LAN UDP when the user denies or
   revokes `ACCESS_LOCAL_NETWORK`; integrations must fail closed and fade neutral.
-  The v0.1 sender targets SDK 35 and correctly relies on `INTERNET` alone.
+  The v0.2 sender targets SDK 35 and correctly relies on `INTERNET` alone.
 
 ## Human factors and evidence
 

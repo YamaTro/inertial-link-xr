@@ -19,5 +19,8 @@
              Link="Samples/%(RecursiveDir)%(Filename)%(Extension)" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(UnityEditorManagedDirectory)/UnityEngine/UnityEngine.CoreModule.dll" Private="false" />
     <Reference Include="UnityEngine.IMGUIModule" HintPath="$(UnityEditorManagedDirectory)/UnityEngine/UnityEngine.IMGUIModule.dll" Private="false" />
+    <Reference Include="UnityEngine.PhysicsModule" HintPath="$(UnityEditorManagedDirectory)/UnityEngine/UnityEngine.PhysicsModule.dll" Private="false" />
+    <Reference Include="UnityEngine.VideoModule" HintPath="$(UnityEditorManagedDirectory)/UnityEngine/UnityEngine.VideoModule.dll" Private="false" />
+    <Reference Include="UnityEngine.ImageConversionModule" HintPath="$(UnityEditorManagedDirectory)/UnityEngine/UnityEngine.ImageConversionModule.dll" Private="false" />
   </ItemGroup>
 </Project>
