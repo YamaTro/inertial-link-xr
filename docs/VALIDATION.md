@@ -10,7 +10,7 @@ It is not a safety, medical, clinical, or compatibility certification.
 
 | Area | Command / evidence | Result |
 | --- | --- | --- |
-| Node protocol and security boundaries | `npm run check` on Node 24.13.1 | 21/21 deterministic unit/mutation tests pass, including the pinned-endpoint UDP relay boundary; 1 recording with 5 synthetic samples validates; 102 local Markdown links across 42 files resolve. |
+| Node protocol and security boundaries | `corepack pnpm check` on Node 24.13.1 | 21/21 deterministic unit/mutation tests pass, including the pinned-endpoint UDP relay boundary; 1 recording with 5 synthetic samples validates; 149 local Markdown links across 44 files resolve. |
 | Node loopback transport | Inspector and connected synthetic sender with the documented public test key | The inspector authenticated and accepted 7 sequential synthetic IMU datagrams on `127.0.0.1`; no non-loopback interface or real sensor was used. |
 | C# protocol core | `dotnet run --project tests/dotnet/InertialLink.Core.Tests.csproj --configuration Release` | 24/24 dependency-free protocol, replay, timing, filtering, and safety-gate executable checks pass. |
 | Android source | From `android/`: Gradle 8.11.1 with `--offline --no-daemon --dependency-verification strict check assembleDebug assembleRelease` | `BUILD SUCCESSFUL`; protocol and motion tests pass and release lint reports no errors. `aapt2` reports `INTERNET` only for release; the local debug APK additionally requests `WAKE_LOCK` for the five-minute-capped locked-device validation path. |
