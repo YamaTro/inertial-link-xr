@@ -17,9 +17,30 @@ vertical video remains clear](docs/assets/xiaomi13t-unity-demo.png)
 packets accepted, 0 rejected, 2,019 directional cues, and Camera pose
 unchanged. This verifies the integration path, not human comfort or efficacy.*
 
-[日本語](README.ja.md) · [Protocol](protocol/SPEC.md) ·
+[Build Week showcase](docs/showcase.md) · [日本語](README.ja.md) ·
+[Protocol](protocol/SPEC.md) ·
 [Integration guide](docs/integration.md) · [Safety](docs/safety.md) ·
 [Security](SECURITY.md)
+
+## OpenAI Build Week showcase
+
+The contest build moved InertialLink XR from an architecture proposal to a
+working Android-to-Unity path. In a stationary Xiaomi 13T validation, Unity
+accepted 216 authenticated motion packets with 0 rejected or dropped, rendered
+2,019 directional background cues around a fixed vertical video, and left the
+Camera pose unchanged. A separate Play Mode run also measured a deliberately
+introduced physical-versus-virtual acceleration mismatch and produced a
+bounded, report-only correction suggestion.
+
+The same external motion reference can support more than passenger-comfort
+research: it can help inspect digital-twin alignment, calibrate simulators, and
+check whether motion-platform output matches a virtual scenario. These are
+future application directions, not completed product validations.
+
+- [Read the illustrated project story, evidence, and future uses](docs/showcase.md)
+- [Watch the demo](https://www.youtube.com/watch?v=cqnwPqBBy8E)
+- [View the Devpost submission](https://devpost.com/software/inertial-link-xr)
+- [Download the v0.2.0 Research Preview](https://github.com/YamaTro/inertial-link-xr/releases/tag/v0.2.0)
 
 > **Passenger use only.** Never use or configure a headset while driving,
 > cycling, walking, or controlling machinery. Stop immediately if you feel
